@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
-
-"""
-
-
+'''
+streamlit run webqc.py
+'''
 import streamlit as st
 import pandas as pd
 import numpy as np
 import altair as alt
 import math
-
-
 
 st.set_page_config(
     page_title="WebQC",
@@ -35,9 +31,6 @@ st.markdown("""
 
 </style>""",
 unsafe_allow_html=True)
-
-
-
 
 ms = st.session_state
 if "themes" not in ms: 
@@ -88,7 +81,6 @@ else:
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 #STOP HIDE the TOP an burger menu!
 
-
 def ChangeTheme():
   previous_theme = ms.themes["current_theme"]
   tdict = ms.themes["light"] if ms.themes["current_theme"] == "light" else ms.themes["dark"]
@@ -111,10 +103,6 @@ if ms.themes["refreshed"] == False:
   ms.themes["refreshed"] = True
   st.rerun()
 
-
-
-
-
 def load_data_2_dataframe(file,separaval):
     '''
      Input Parameters
@@ -128,57 +116,35 @@ def load_data_2_dataframe(file,separaval):
     -------
     session_state containing dataframe df
     '''
- 
     if 'df' not in st.session_state:
-        #df= pd.read_csv(file)
-        #df = pd.read_csv(file,sep='\t|:|;|,')
         df = pd.read_csv(file,sep=separaval)
         st.session_state['df'] = df
-        #st.dataframe(df)
         st.data_editor(df, num_rows="dynamic")
-        # filtered_df = dataframe_explorer(df, case=False)
-        # st.dataframe(filtered_df, use_container_width=True)
- 
     else:
-        #st.dataframe(st.session_state['df'])
         st.data_editor(st.session_state['df'], num_rows="dynamic")
-        # filtered_df = dataframe_explorer(st.session_state['df'], case=False)
-        # st.dataframe(filtered_df, use_container_width=True)
         
     return st.session_state['df']
-
-
 
 def reset_data():
     if 'df' not in st.session_state:
         print('Dataframe not found')
- 
     else:
         del st.session_state['df']
-    
-    load_data()
-    
-    
+    load_data()    
     
 def qc():
- 
     st.title(':blue[Assign QC Flags] 📈')
     if 'df' in st.session_state:  
         seedata = st.toggle('See dataframe', key="2")
-        
-        df= st.session_state['df']
-        
+        df= st.session_state['df']     
         if "WebQCIndex" not in df.columns:
             df['WebQCIndex'] = range(1, len(df) + 1)
             st.write('To manage the QC, a column labelled WebQCIndex has been added to the dataframe')
-
         if seedata:
-            st.write(df)
-            
+            st.write(df)           
         colsGrid = st.columns(4)
         param_column=['']
         param_column.extend(df.columns)
-
         qc_column=['']
         qc_column.extend(df.columns)
         with colsGrid[0]:
@@ -205,10 +171,8 @@ def qc():
                 )
                 .add_params(point_selector, interval_selector)
                 .properties(width=1100, height=900)
-            )
-            
+            )          
             event = st.altair_chart(chart, theme="streamlit", key="alt_chart", on_select="rerun")
-
             downloaddata = st.toggle('Download data CSV format', key="1")
             if downloaddata:
                 import time
@@ -218,8 +182,7 @@ def qc():
                 st.download_button(
                     label="Download Saved data data as CSV", data=df.to_csv(index=False), file_name="Saved_data"+savename+".csv",
                     mime="text/csv"
-                )
-            
+                )            
             if str(event)!='{\'selection\': {\'interval\': {}}}':
                 with colsGrid[2]:
                     myFlags=[0,1,2,3,4,5,6,7,8,9]
@@ -227,20 +190,17 @@ def qc():
                 with colsGrid[3]: 
                     st.write('')
                     st.write('')
-                    if st.button("Assign QC FLAG"):
-                        
+                    if st.button("Assign QC FLAG"):                    
                         x = event.get("selection").get("interval_selection").get("WebQCIndex")
                         y = event.get("selection").get("interval_selection").get(myY)
                         if str(event)!='{\'selection\': {\'interval\': {}}}':
-
                             count=0
                             for u in x:
                                 if count==0:
                                     bottomId = math.floor(u)
                                     count+=1
                                 else:
-                                    topId = math.ceil(u)
-                            
+                                    topId = math.ceil(u)                           
                             count=0
                             for e in y:
                                 if count==0:
@@ -252,15 +212,10 @@ def qc():
                             for i in range(bottomId, topId):
                                 if df[myY][i] >= bottomParam and df[myY][i] <= topParam:
                                     df[myZ][i]=selected_flag
-                            #st.write(df)
-                        
                             st.rerun()
-     
     else:
         st.write('Please LOAD DATA')
 
-#using diferent pages
-# Define your page functions
 def load_data():
     '''
     loads the selected file into a dataframe
@@ -270,15 +225,12 @@ def load_data():
     # check if the dataframe df in st.session_state and is not blank
     if 'df' in st.session_state and st.session_state['df'] is not None:
         df=load_data_2_dataframe(st.session_state['selected_file'])
-  
     else:
         file = st.file_uploader("Upload a file", type=['csv'])
         separa = st.radio(
             "Specify the separator",
-            ["COMMA", "TAB", "COLON", "SEMICOLON"])
-        
-        if file is not None:
-            
+            ["COMMA", "TAB", "COLON", "SEMICOLON"])       
+        if file is not None:     
             if separa == 'COMMA':
                 separaval=','
             if separa == 'TAB':
@@ -287,11 +239,9 @@ def load_data():
                 separaval=':'
             if separa == 'SEMICOLON':
                 separaval=';'
-                
             st.session_state['selected_file'] = file
             df=load_data_2_dataframe(st.session_state['selected_file'],separaval)
             
-
 if choice == "Load Data":
     reset_data()
 elif choice == "Quality Control":
