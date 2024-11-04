@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-cd Videos/tmpEr/Streamlit/altair
-streamlit run webqc.py
 
-
-
-
-https://docs.streamlit.io/develop/api-reference/charts/st.altair_chart
 """
 
 
@@ -15,7 +9,6 @@ import pandas as pd
 import numpy as np
 import altair as alt
 import math
-
 
 
 
@@ -122,7 +115,7 @@ if ms.themes["refreshed"] == False:
 
 
 
-def load_data_2_dataframe(file):
+def load_data_2_dataframe(file,separaval):
     '''
      Input Parameters
     ----------
@@ -137,18 +130,24 @@ def load_data_2_dataframe(file):
     '''
  
     if 'df' not in st.session_state:
-        df= pd.read_csv(file)
+        #df= pd.read_csv(file)
+        #df = pd.read_csv(file,sep='\t|:|;|,')
+        df = pd.read_csv(file,sep=separaval)
         st.session_state['df'] = df
-        st.dataframe(df)
+        #st.dataframe(df)
+        st.data_editor(df, num_rows="dynamic")
+        # filtered_df = dataframe_explorer(df, case=False)
+        # st.dataframe(filtered_df, use_container_width=True)
  
     else:
-        st.dataframe(st.session_state['df'])
+        #st.dataframe(st.session_state['df'])
+        st.data_editor(st.session_state['df'], num_rows="dynamic")
+        # filtered_df = dataframe_explorer(st.session_state['df'], case=False)
+        # st.dataframe(filtered_df, use_container_width=True)
         
     return st.session_state['df']
 
 
-
-         
 
 def reset_data():
     if 'df' not in st.session_state:
@@ -160,10 +159,6 @@ def reset_data():
     load_data()
     
     
-
-    
-
-
     
 def qc():
  
@@ -183,18 +178,14 @@ def qc():
         colsGrid = st.columns(4)
         param_column=['']
         param_column.extend(df.columns)
-        #index_column=['']
-        #index_column.extend(df.columns)
+
         qc_column=['']
         qc_column.extend(df.columns)
         with colsGrid[0]:
             selected_param_column = st.selectbox('Select param column to check:', param_column)
-        #selected_index_column = st.selectbox('Select index column to check:', index_column)
         with colsGrid[1]:
             selected_qc_column = st.selectbox('Select QC flag column:', qc_column)
         
-        
-        #if selected_param_column != '' and selected_qc_column != '' and selected_index_column != '':
         if selected_param_column != '' and selected_qc_column != '':
             #myX=selected_index_column
             myY=selected_param_column
@@ -217,7 +208,7 @@ def qc():
             )
             
             event = st.altair_chart(chart, theme="streamlit", key="alt_chart", on_select="rerun")
-            #st.write(event)
+
             downloaddata = st.toggle('Download data CSV format', key="1")
             if downloaddata:
                 import time
@@ -237,32 +228,26 @@ def qc():
                     st.write('')
                     st.write('')
                     if st.button("Assign QC FLAG"):
-                        #st.write(df[myZ][4])
                         
                         x = event.get("selection").get("interval_selection").get("WebQCIndex")
                         y = event.get("selection").get("interval_selection").get(myY)
                         if str(event)!='{\'selection\': {\'interval\': {}}}':
-                            #st.write(str(event))
-                            #st.write(str(x))
+
                             count=0
                             for u in x:
                                 if count==0:
                                     bottomId = math.floor(u)
-                                    #st.write(str(bottomId))
                                     count+=1
                                 else:
                                     topId = math.ceil(u)
-                                    #st.write(str(topId))
                             
                             count=0
                             for e in y:
                                 if count==0:
                                     bottomParam = math.ceil(e)
-                                    #st.write(str(bottomParam))
                                     count+=1
                                 else:
-                                    topParam = math.floor(e)
-                                    #st.write(str(topParam))        
+                                    topParam = math.floor(e)     
                             
                             for i in range(bottomId, topId):
                                 if df[myY][i] >= bottomParam and df[myY][i] <= topParam:
@@ -274,8 +259,6 @@ def qc():
     else:
         st.write('Please LOAD DATA')
 
-   
-
 #using diferent pages
 # Define your page functions
 def load_data():
@@ -283,33 +266,31 @@ def load_data():
     loads the selected file into a dataframe
     stores the selected file and dataframe in st.session_state
     '''
-    st.title(':blue[Load data] 📂')
+    st.title(':blue[Load CSV dataset] 📂')
     # check if the dataframe df in st.session_state and is not blank
     if 'df' in st.session_state and st.session_state['df'] is not None:
         df=load_data_2_dataframe(st.session_state['selected_file'])
-    #if the df does not exist in sesssion state then populate it       
+  
     else:
         file = st.file_uploader("Upload a file", type=['csv'])
+        separa = st.radio(
+            "Specify the separator",
+            ["COMMA", "TAB", "COLON", "SEMICOLON"])
+        
         if file is not None:
-            st.session_state['selected_file'] = file
-            df=load_data_2_dataframe(st.session_state['selected_file'])
             
- 
-        if 'null_count' in st.session_state:
-            if st.session_state["null_count"] >0:
-                null_action = st.radio(
-                    'Select the action for handling Null Values',
-                    ['Drop NA', 'Impute with 0', 'Impute with Mean', ])
-                if null_action=='Drop NA':
-                    #drop NA values in place
-                    df= df.dropna(inplace=True)
-                elif null_action=='Impute with 0':
-                    # Fill missing values with a specific value
-                    df = df.fillna(0, inplace=True)
-                elif null_action=='Impute with 0':
-                    # Fill missing values with mean of the column
-                    df = df.fillna(df.mean(), inplace=True)
-                    st.write(df)
+            if separa == 'COMMA':
+                separaval=','
+            if separa == 'TAB':
+                separaval='\t'
+            if separa == 'COLON':
+                separaval=':'
+            if separa == 'SEMICOLON':
+                separaval=';'
+                
+            st.session_state['selected_file'] = file
+            df=load_data_2_dataframe(st.session_state['selected_file'],separaval)
+            
 
 if choice == "Load Data":
     reset_data()
