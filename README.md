@@ -8,7 +8,7 @@ For any suggestion you can contact me at pythonopenprojects@gmail.com
 
 # Quick start:
 
-## 1) load your dataset as an CSV file (you can choose the separator)
+### 1) load your dataset as an CSV file (you can choose the separator)
 
 ![logo](https://github.com/PythonOpenProjects/WebQC/blob/main/images/step1.png)
 
