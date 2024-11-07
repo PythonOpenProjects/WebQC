@@ -7,6 +7,8 @@ import pandas as pd
 import numpy as np
 import altair as alt
 import math
+# disable chained assignments
+#pd.options.mode.chained_assignment = None 
 
 st.set_page_config(
     page_title="WebQC",
@@ -103,6 +105,18 @@ if ms.themes["refreshed"] == False:
   ms.themes["refreshed"] = True
   st.rerun()
 
+
+def function_cleaner(x):
+   x = x.replace(' ', '')
+   x = x.replace(':', '')
+   x = x.replace('[', '')
+   x = x.replace(']', '')
+   x = x.replace('.', '')
+   x = x.replace('/', '')
+   #print('ricambio'+str(x))
+   return x
+
+
 def load_data_2_dataframe(file,separaval):
     '''
      Input Parameters
@@ -118,10 +132,15 @@ def load_data_2_dataframe(file,separaval):
     '''
     if 'df' not in st.session_state:
         df = pd.read_csv(file,sep=separaval)
+        
+        #df.rename(columns=function_cleaner).head()
+        
         st.session_state['df'] = df
-        st.data_editor(df, num_rows="dynamic")
+        #st.data_editor(df, num_rows="dynamic")
+        st.data_editor(df)
     else:
-        st.data_editor(st.session_state['df'], num_rows="dynamic")
+        #st.data_editor(st.session_state['df'], num_rows="dynamic")
+        st.data_editor(st.session_state['df'])
         
     return st.session_state['df']
 
@@ -197,21 +216,29 @@ def qc():
                             count=0
                             for u in x:
                                 if count==0:
+                                    #bottomId = math.floor(u)
                                     bottomId = math.floor(u)
                                     count+=1
                                 else:
-                                    topId = math.ceil(u)                           
+                                    #topId = math.ceil(u)   
+                                    topId = math.ceil(u)
                             count=0
                             for e in y:
                                 if count==0:
-                                    bottomParam = math.ceil(e)
+                                    #bottomParam = math.ceil(e)
+                                    bottomParam = math.floor(e)
                                     count+=1
                                 else:
-                                    topParam = math.floor(e)     
+                                    #topParam = math.floor(e) 
+                                    topParam = math.ceil(e)
                             
                             for i in range(bottomId, topId):
+                                print(str(df[myZ][i])+' to '+str(selected_flag))
                                 if df[myY][i] >= bottomParam and df[myY][i] <= topParam:
+                                    
                                     df[myZ][i]=selected_flag
+                                    #print(str(df[myZ][i])+' to '+str(selected_flag))
+                                    #df.loc[df[myZ], i] = selected_flag
                             st.rerun()
     else:
         st.write('Please LOAD DATA')
