@@ -233,7 +233,7 @@ def qc():
                                     topParam = math.ceil(e)
                             
                             for i in range(bottomId, topId):
-                                print(str(df[myZ][i])+' to '+str(selected_flag))
+                                #print(str(df[myZ][i])+' to '+str(selected_flag))
                                 if df[myY][i] >= bottomParam and df[myY][i] <= topParam:
                                     
                                     df[myZ][i]=selected_flag
