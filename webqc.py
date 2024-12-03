@@ -96,7 +96,7 @@ def ChangeTheme():
 st.sidebar.title("Web QC")
 st.sidebar.title("Navigation Options")
 # Display different functionalities
-choice = st.sidebar.selectbox('Select....', options=["Load Data", "Quality Control"], index=0)
+choice = st.sidebar.selectbox('Select....', options=["Load Data", "Edit Dataframe", "Quality Control"], index=0)
 btn_face = ms.themes["light"]["button_face"] if ms.themes["current_theme"] == "light" else ms.themes["dark"]["button_face"]
 st.sidebar.write (':blue[\nChange Theme:]')
 st.sidebar.button(btn_face, on_click=ChangeTheme)
@@ -107,13 +107,13 @@ if ms.themes["refreshed"] == False:
 
 
 def function_cleaner(x):
-   x = x.replace(' ', '')
-   x = x.replace(':', '')
-   x = x.replace('[', '')
-   x = x.replace(']', '')
-   x = x.replace('.', '')
-   x = x.replace('/', '')
-   #print('ricambio'+str(x))
+   x = x.replace(' ', '_')
+   x = x.replace(':', '_')
+   x = x.replace('[', '_')
+   x = x.replace(']', '_')
+   x = x.replace('.', '_')
+   x = x.replace('/', '_')
+   print('change '+str(x))
    return x
 
 
@@ -133,7 +133,10 @@ def load_data_2_dataframe(file,separaval):
     if 'df' not in st.session_state:
         df = pd.read_csv(file,sep=separaval)
         
-        #df.rename(columns=function_cleaner).head()
+        
+        for tmpcol in df.columns:
+            cleanCol=function_cleaner(tmpcol)
+            df.rename(columns={tmpcol: cleanCol}, inplace=True)
         
         st.session_state['df'] = df
         #st.data_editor(df, num_rows="dynamic")
@@ -155,7 +158,8 @@ def qc():
     st.title(':blue[Assign QC Flags] 📈')
     if 'df' in st.session_state:  
         seedata = st.toggle('See dataframe', key="2")
-        df= st.session_state['df']     
+        df= st.session_state['df']   
+        
         if "WebQCIndex" not in df.columns:
             df['WebQCIndex'] = range(1, len(df) + 1)
             st.write('To manage the QC, a column labelled WebQCIndex has been added to the dataframe')
@@ -252,6 +256,7 @@ def load_data():
     # check if the dataframe df in st.session_state and is not blank
     if 'df' in st.session_state and st.session_state['df'] is not None:
         df=load_data_2_dataframe(st.session_state['selected_file'])
+        
     else:
         file = st.file_uploader("Upload a file", type=['csv'])
         separa = st.radio(
@@ -268,8 +273,47 @@ def load_data():
                 separaval=';'
             st.session_state['selected_file'] = file
             df=load_data_2_dataframe(st.session_state['selected_file'],separaval)
+
+
+
+
+def loadDataEditor():
+    if 'df' in st.session_state:
+        df= st.session_state['df']
+        
+        #st.write('Data Editor')
+        st.title(':blue[Data Editor] 📝')
+        cols = st.columns(2)
+        with cols[0]:
+            selected_column = st.selectbox('Select column name to delete:', df.columns,index=None, placeholder="Select ...",)
+            #st.write('')
+            if st.button("Delete Column"):
+                if selected_column is not None:
+                    df.drop(columns=[selected_column], axis=1, inplace=True)
+                
+        with cols[1]:
+            #st.write('Insert column name')
+            
+            title = st.text_input(
+                "Insert column name to create a new one 👇",
+                "",
+                key="placeholder",
+            )
+            if st.button("Create Column"):
+                if title != '':
+                    df[title] = ''
+                
+
+            
+        st.data_editor(df, num_rows="dynamic")
+        #clean_data() 
+    else:
+        st.write('Please LOAD DATA')
+
             
 if choice == "Load Data":
     reset_data()
+elif choice == "Edit Dataframe":
+    loadDataEditor()
 elif choice == "Quality Control":
     qc()
