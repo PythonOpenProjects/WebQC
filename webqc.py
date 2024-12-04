@@ -220,21 +220,22 @@ def qc():
                             count=0
                             for u in x:
                                 if count==0:
-                                    #bottomId = math.floor(u)
                                     bottomId = math.floor(u)
+                                    #bottomId = u
                                     count+=1
                                 else:
-                                    #topId = math.ceil(u)   
-                                    topId = math.ceil(u)
+                                    topId = math.ceil(u)   
+                                    #topId = u
                             count=0
                             for e in y:
                                 if count==0:
                                     #bottomParam = math.ceil(e)
-                                    bottomParam = math.floor(e)
+                                    #bottomParam = math.floor(e)
+                                    bottomParam = e
                                     count+=1
                                 else:
-                                    #topParam = math.floor(e) 
-                                    topParam = math.ceil(e)
+                                    topParam = e 
+                                    #topParam = math.ceil(e)
                             
                             for i in range(bottomId, topId):
                                 #print(str(df[myZ][i])+' to '+str(selected_flag))
