@@ -184,7 +184,7 @@ def qc():
             point_selector = alt.selection_point("point_selection")
             interval_selector = alt.selection_interval("interval_selection")
             chart = (
-                alt.Chart(dataframe_explorer(df, case=False))
+                alt.Chart(df)
                 .mark_circle()
                 .encode(
                     x="WebQCIndex",
