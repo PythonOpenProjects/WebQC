@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import altair as alt
 import math
+from streamlit_extras.dataframe_explorer import dataframe_explorer
 # disable chained assignments
 #pd.options.mode.chained_assignment = None 
 
@@ -159,12 +160,13 @@ def qc():
     if 'df' in st.session_state:  
         seedata = st.toggle('See dataframe', key="2")
         df= st.session_state['df']   
-        
+        #df = dataframe_explorer(df, case=False)
         if "WebQCIndex" not in df.columns:
             df['WebQCIndex'] = range(1, len(df) + 1)
             st.write('To manage the QC, a column labelled WebQCIndex has been added to the dataframe')
         if seedata:
-            st.write(df)           
+            st.write(df)    
+        
         colsGrid = st.columns(4)
         param_column=['']
         param_column.extend(df.columns)
@@ -182,7 +184,7 @@ def qc():
             point_selector = alt.selection_point("point_selection")
             interval_selector = alt.selection_interval("interval_selection")
             chart = (
-                alt.Chart(df)
+                alt.Chart(dataframe_explorer(df, case=False))
                 .mark_circle()
                 .encode(
                     x="WebQCIndex",
@@ -245,6 +247,7 @@ def qc():
                                     #print(str(df[myZ][i])+' to '+str(selected_flag))
                                     #df.loc[df[myZ], i] = selected_flag
                             st.rerun()
+        
     else:
         st.write('Please LOAD DATA')
 
@@ -284,6 +287,7 @@ def loadDataEditor():
         
         #st.write('Data Editor')
         st.title(':blue[Data Editor] 📝')
+        #df = dataframe_explorer(df, case=False)
         cols = st.columns(2)
         with cols[0]:
             selected_column = st.selectbox('Select column name to delete:', df.columns,index=None, placeholder="Select ...",)
@@ -306,7 +310,7 @@ def loadDataEditor():
                 
 
             
-        st.data_editor(df, num_rows="dynamic")
+        st.data_editor(dataframe_explorer(df, case=False), num_rows="dynamic")
         #clean_data() 
     else:
         st.write('Please LOAD DATA')
