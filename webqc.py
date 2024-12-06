@@ -183,20 +183,38 @@ def qc():
             myZ=selected_qc_column
             point_selector = alt.selection_point("point_selection")
             interval_selector = alt.selection_interval("interval_selection")
-            chart = (
-                alt.Chart(df)
-                .mark_circle()
-                .encode(
-                    x="WebQCIndex",
-                    y=myY,
-                    #size=myZ+":N",
-                    color=myZ+":N",
-                    tooltip=["WebQCIndex", myY, myZ],
-                    fillOpacity=alt.condition(point_selector, alt.value(1), alt.value(0.3))
-                )
-                .add_params(point_selector, interval_selector)
-                .properties(width=1100, height=900)
-            )          
+            chartFilter = st.toggle('Use Chart with filters (WARNING: anomaly behaviour with great datasets)', key="5")
+            
+            if chartFilter:
+                chart = (
+                    alt.Chart(dataframe_explorer(df, case=False))
+                    .mark_circle()
+                    .encode(
+                        x="WebQCIndex",
+                        y=myY,
+                        #size=myZ+":N",
+                        color=myZ+":N",
+                        tooltip=["WebQCIndex", myY, myZ],
+                        fillOpacity=alt.condition(point_selector, alt.value(1), alt.value(0.3))
+                    )
+                    .add_params(point_selector, interval_selector)
+                    .properties(width=1100, height=900)
+                )  
+            else:
+                chart = (
+                    alt.Chart(df)
+                    .mark_circle()
+                    .encode(
+                        x="WebQCIndex",
+                        y=myY,
+                        #size=myZ+":N",
+                        color=myZ+":N",
+                        tooltip=["WebQCIndex", myY, myZ],
+                        fillOpacity=alt.condition(point_selector, alt.value(1), alt.value(0.3))
+                    )
+                    .add_params(point_selector, interval_selector)
+                    .properties(width=1100, height=900)
+                )          
             event = st.altair_chart(chart, theme="streamlit", key="alt_chart", on_select="rerun")
             downloaddata = st.toggle('Download data CSV format', key="1")
             if downloaddata:
