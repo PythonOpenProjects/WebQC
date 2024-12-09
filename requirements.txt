@@ -1,4 +1,4 @@
-strteamlit==1.39.0
+streamlit==1.39.0
 pandas==2.0.3
 altair==5.2.0
 streamlit_extras==0.4.2
