@@ -18,11 +18,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-'''
-pandas==2.0.3
-altair==5.2.0
-streamlit_extras==0.4.2
-'''
+
 #START HIDE the TOP an burger menu!
 st.markdown("""
 <style>
@@ -192,9 +188,9 @@ def qc():
             
             if chartFilter:
                 chart = (
-                    alt.Chart(df)
+                    #alt.Chart(df)
                     # Uncomment the following line if use away from streamlit.app
-                    #alt.Chart(dataframe_explorer(df, case=False))
+                    alt.Chart(dataframe_explorer(df, case=False))
                     .mark_circle()
                     .encode(
                         x="WebQCIndex",
@@ -333,9 +329,9 @@ def loadDataEditor():
                 if title != '':
                     df[title] = ''
                 
-        st.data_editor(df, num_rows="dynamic")
+        #st.data_editor(df, num_rows="dynamic")
         # Uncomment the following line if use away from streamlit.app   
-        #st.data_editor(dataframe_explorer(df, case=False), num_rows="dynamic")
+        st.data_editor(dataframe_explorer(df, case=False), num_rows="dynamic")
         #clean_data() 
     else:
         st.write('Please LOAD DATA')
