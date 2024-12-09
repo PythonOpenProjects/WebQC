@@ -9,7 +9,7 @@ import altair as alt
 import math
 
 # Uncomment the following line if use away from streamlit.app
-#from streamlit_extras.dataframe_explorer import dataframe_explorer
+from streamlit_extras.dataframe_explorer import dataframe_explorer
 
 
 st.set_page_config(
