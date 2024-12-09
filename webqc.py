@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import altair as alt
 import math
-from streamlit_extras.dataframe_explorer import dataframe_explorer
+#from streamlit_extras.dataframe_explorer import dataframe_explorer
 # disable chained assignments
 #pd.options.mode.chained_assignment = None 
 
@@ -187,7 +187,7 @@ def qc():
             
             if chartFilter:
                 chart = (
-                    alt.Chart(dataframe_explorer(df, case=False))
+                    alt.Chart(df)
                     .mark_circle()
                     .encode(
                         x="WebQCIndex",
@@ -328,7 +328,7 @@ def loadDataEditor():
                 
 
             
-        st.data_editor(dataframe_explorer(df, case=False), num_rows="dynamic")
+        st.data_editor(df, num_rows="dynamic")
         #clean_data() 
     else:
         st.write('Please LOAD DATA')
