@@ -6,7 +6,7 @@ For any suggestion you can contact me at pythonopenprojects@gmail.com
 
 ## Available on streamlit.app:  
 
-https://webdataqc.streamlit.app/
+[https://webqualitycontrol.streamlit.app/](https://webqualitycontrol.streamlit.app/)
 
 # Quick start:
 
