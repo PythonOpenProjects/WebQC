@@ -8,6 +8,12 @@ For any suggestion you can contact me at pythonopenprojects@gmail.com
 
 [https://webqualitycontrol.streamlit.app/](https://webqualitycontrol.streamlit.app/)
 
+
+## Video example
+* (https://www.youtube.com/watch?v=9tdEWL5iWqk " A little video about the use of the software")
+[![Watch the video](https://img.youtube.com/vi/9tdEWL5iWqk/maxresdefault.jpg)](https://youtu.be/9tdEWL5iWqk)
+
+
 # Quick start:
 
 #### 1) load your dataset as a CSV file (you can choose the separator)
