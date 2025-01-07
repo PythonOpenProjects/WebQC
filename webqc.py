@@ -13,7 +13,7 @@ import altair as alt
 import math
 
 # Uncomment the following line if use away from streamlit.app
-#from streamlit_extras.dataframe_explorer import dataframe_explorer
+from streamlit_extras.dataframe_explorer import dataframe_explorer
 
 
 st.set_page_config(
@@ -119,6 +119,16 @@ def function_cleaner(x):
    x = x.replace(']', '_')
    x = x.replace('.', '_')
    x = x.replace('/', '_')
+   x = x.replace('#', '_')
+   x = x.replace(',', '_')
+   x = x.replace(';', '_')
+   x = x.replace(':', '_')
+   x = x.replace('^', '_')
+   x = x.replace('\'', '_')
+   x = x.replace('"', '_')
+   x = x.replace('(', '_')
+   x = x.replace(')', '_')
+   x = x.replace('&', '_')
    print('change '+str(x))
    return x
 
@@ -192,9 +202,9 @@ def qc():
             
             if chartFilter:
                 chart = (
-                    alt.Chart(df)
+                    #alt.Chart(df)
                     # Uncomment the following line if use away from streamlit.app
-                    #alt.Chart(dataframe_explorer(df, case=False))
+                    alt.Chart(dataframe_explorer(df, case=False))
                     .mark_circle()
                     .encode(
                         x="WebQCIndex",
@@ -333,9 +343,9 @@ def loadDataEditor():
                 if title != '':
                     df[title] = ''
                 
-        st.data_editor(df, num_rows="dynamic")
+        #st.data_editor(df, num_rows="dynamic")
         # Uncomment the following line if use away from streamlit.app   
-        #st.data_editor(dataframe_explorer(df, case=False), num_rows="dynamic")
+        st.data_editor(dataframe_explorer(df, case=False), num_rows="dynamic")
         #clean_data() 
     else:
         st.write('Please LOAD DATA')
